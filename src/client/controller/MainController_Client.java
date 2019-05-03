@@ -259,9 +259,9 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 	 */
 	public void registerClickOnGameBoard(ActionEvent event) throws IOException
 	{
-		if(server_checkBothPlayersRegistered()==true)
+		if(server_checkBothPlayersRegistered())
 		{	
-			if(server_checkMatchupIsSet()==true)
+			if(server_checkMatchupIsSet())
 			{
 				if(mainWindow.getMarkOfMainWindow().equals(server_getCurrentPlayerMark()))
 				{
@@ -316,11 +316,11 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 	 */
 	synchronized public void nextTurn() throws IOException
 	{
-		if(server_checkBothPlayersRegistered()==true)
+		if(server_checkBothPlayersRegistered())
 		{
-			if (server_checkIfToContinue()==true)
+			if (server_checkIfToContinue())
 			{
-				if(server_checkIfAnyMoveYet()==true) //if a move has been made (i.e. not the first move of the game).
+				if(server_checkIfAnyMoveYet()) //if a move has been made (i.e. not the first move of the game).
 				{
 					server_setOpponentOfCurrentAsCurrent();
 				}
@@ -396,19 +396,6 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 		jsonToGame.add(nameofCurrMethod,JsonNull.INSTANCE);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
-	}
-
-	private int server_getNumberOfClients() throws IOException
-	{
-		class LocalInner{}; 
-		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
-
-		jsonToGame.add(nameofCurrMethod,JsonNull.INSTANCE);
-		outputToGame.println(jsonToGame.toString());
-		jsonToGame.remove(nameofCurrMethod);
-
-		String numClients=responseFromGame.readLine();
-		return Integer.parseInt(numClients);
 	}
 
 	private void server_setOpponentOfCurrentAsCurrent() throws IOException

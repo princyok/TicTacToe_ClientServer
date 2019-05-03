@@ -69,9 +69,9 @@ public class PlayerRegisterController_Client extends WindowAdapter implements Pr
 				{
 					if(playerMark.equals("X"))
 					{
-						String xPlayerStatus=server_checkXPlayerRegistered();
+						boolean xPlayerStatus=server_checkXPlayerRegistered();
 						
-						if(!Boolean.parseBoolean(xPlayerStatus))
+						if(!xPlayerStatus)
 						{
 							server_createPlayer(playerUsername, playerType, playerMark);
 						}
@@ -83,9 +83,9 @@ public class PlayerRegisterController_Client extends WindowAdapter implements Pr
 					
 					if(playerMark.equals("O"))
 					{
-						String oPlayerStatus=server_checkOPlayerRegistered();
+						boolean oPlayerStatus=server_checkOPlayerRegistered();
 						
-						if(!Boolean.parseBoolean(oPlayerStatus))
+						if(!oPlayerStatus)
 						{
 							server_createPlayer(playerUsername, playerType, playerMark);
 						}
@@ -139,7 +139,7 @@ public class PlayerRegisterController_Client extends WindowAdapter implements Pr
 		prWindow.dispose();
 	}
 	
-	private String server_checkXPlayerRegistered() throws IOException
+	private boolean server_checkXPlayerRegistered() throws IOException
 	{
 		class LocalInner{}; 
         String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
@@ -149,10 +149,10 @@ public class PlayerRegisterController_Client extends WindowAdapter implements Pr
 		jsonToGame.remove(nameofCurrMethod);
 		
 		String xPlayerStatus=mainWindowController.responseFromGame.readLine();		
-		return xPlayerStatus;
+		return Boolean.parseBoolean(xPlayerStatus);
 	}
 	
-	private String server_checkOPlayerRegistered() throws IOException
+	private boolean server_checkOPlayerRegistered() throws IOException
 	{
 		class LocalInner{}; 
         String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
@@ -162,6 +162,6 @@ public class PlayerRegisterController_Client extends WindowAdapter implements Pr
 		jsonToGame.remove(nameofCurrMethod);
 		
 		String OPlayerStatus=mainWindowController.responseFromGame.readLine();		
-		return OPlayerStatus;
+		return Boolean.parseBoolean(OPlayerStatus);
 	}
 }
