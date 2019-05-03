@@ -133,7 +133,8 @@ public class PlayerRegisterController_Client extends WindowAdapter implements Pr
 		mainWindowController.mainWindow.setEnabled(true); //restore clickableness of mainframe.
 		
 		mainWindowController.mainWindow.setMarkOfMainWindow(playerMark);
-		mainWindowController.mainWindow.updateTitle();
+		
+		mainWindowController.mainWindow.updateLblPlayerType();
 		
 		prWindow.dispose();
 	}

@@ -3,6 +3,7 @@ package server;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.Font;
@@ -11,12 +12,15 @@ import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 
 import javax.swing.JButton;
-import javax.swing.SwingConstants;
 import javax.swing.JTextArea;
 
 public class MainWindow extends JFrame 
 {
-	public JPanel mainpane;
+	protected JPanel mainpane;
+	protected JLabel lblServer;
+	protected JLabel lblNoteAboutClients;
+	protected JButton btnCloseServer;
+	protected JTextArea displayBoard;
 	
 	public MainWindow() 
 	{
@@ -29,31 +33,33 @@ public class MainWindow extends JFrame
 		
 		mainpane.setLayout(null);
 	
-		JLabel lblServerIsRunning = new JLabel("The Server is now running...");
-		lblServerIsRunning.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblServerIsRunning.setBounds(109, 32, 191, 29);
-		mainpane.add(lblServerIsRunning); 
+		lblServer = new JLabel("TicTacToe Server");
+		lblServer.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblServer.setBounds(109, 11, 191, 29);
+		mainpane.add(lblServer); 
 
-		JLabel lblNoteAboutClients = new JLabel("NOTE: Two clients are needed for the game to run.");
-		lblNoteAboutClients.setBounds(10, 72, 352, 14);
+		lblNoteAboutClients = new JLabel("NOTE: Two clients are needed for a game to run.");
+		lblNoteAboutClients.setBounds(10, 51, 352, 14);
 		mainpane.add(lblNoteAboutClients);
 
-		JButton btnCloseServer = new JButton("CLOSE THE SERVER");
-		btnCloseServer.setBounds(139, 186, 161, 92);
+		btnCloseServer = new JButton("CLOSE THE SERVER");
+		btnCloseServer.setBounds(151, 229, 161, 59);
 		mainpane.add(btnCloseServer);
 		
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		JLabel lblTimeStamp = new JLabel(timestamp.toString());
-		lblTimeStamp.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTimeStamp.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblTimeStamp.setBounds(109, 11, 191, 23);
-		mainpane.add(lblTimeStamp);
+		displayBoard = new JTextArea((new Timestamp(System.currentTimeMillis())).toString()+" Server is now running...");
+		displayBoard.setLineWrap(true);
+		displayBoard.setEditable(false);
+		displayBoard.setBounds(10, 76, 414, 142);
+		JScrollPane scroll = new JScrollPane (displayBoard, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scroll.setBounds(10, 76, 414, 142);
+		mainpane.add(scroll);
 		
-		JTextArea textArea = new JTextArea();
-		textArea.setLineWrap(true);
-		textArea.setEditable(false);
-		textArea.setBounds(10, 108, 416, 52);
-		mainpane.add(textArea);
+		this.setTitle("Server");
+		this.setResizable(false);
+		this.setVisible(true);
+		
+		// ANONYMOUS LISTENERS.
 
 		btnCloseServer.addActionListener(new ActionListener()
 		{
@@ -62,7 +68,10 @@ public class MainWindow extends JFrame
 				System.exit(0);
 			}
 		});
-		
-		this.setVisible(true);
+	}
+	
+	public void printToDisplay(String s) 
+	{
+		displayBoard.setText(displayBoard.getText()+"\n"+s);
 	}
 }

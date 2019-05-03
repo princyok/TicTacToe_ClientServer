@@ -23,6 +23,8 @@ public class ServerRunner
 	socketForClient2, socketForBroadcastingToClient2;
 
 	public ServerController gameController;
+	
+	MainWindow serverWindow;
 
 
 	//INITIALIZER METHODS.
@@ -30,6 +32,24 @@ public class ServerRunner
 	public ServerRunner() throws IOException
 	{
 		gameServerSocket = new ServerSocket(7876);
+		
+		EventQueue.invokeLater
+		(
+			new Runnable() 
+			{	@Override
+				public void run() 
+				{
+					try
+					{
+						serverWindow = new MainWindow();
+					}
+					catch (Exception e) 
+					{
+						JOptionPane.showMessageDialog(null, "An error occured. The program will now exit.");
+					}
+				}
+			}
+		);
 	}
 
 	/**
@@ -65,25 +85,7 @@ public class ServerRunner
 	// ENTRY-POINT.
 
 	public static void main(String[] args) 
-	{
-		EventQueue.invokeLater
-		(
-			new Runnable() 
-			{	@Override
-				public void run() 
-				{
-					try
-					{
-						new MainWindow();
-					}
-					catch (Exception e) 
-					{
-						JOptionPane.showMessageDialog(null, "An error occured. The program will now exit.");
-					}
-				}
-			}
-		);
-		
+	{		
 		try
 		{
 			ServerRunner ServerRunner = new ServerRunner();
@@ -100,6 +102,7 @@ public class ServerRunner
 		}
 		catch(IOException e) 
 		{
+			e.getStackTrace();
 			JOptionPane.showMessageDialog(null, "An Input-Output error occured. The program will now exit.");
 		}
 	}
@@ -116,8 +119,9 @@ public class ServerRunner
 	private  Socket acceptConnectionForClient(int i) throws IOException
 	{
 		Socket socketForClient= gameServerSocket.accept();
-		System.out.print(new Timestamp(System.currentTimeMillis()));
-		System.out.println(" Connetion"+i+" Accepted.");
+		
+		serverWindow.printToDisplay((new Timestamp(System.currentTimeMillis())).toString());
+		serverWindow.printToDisplay(" Client"+i+" Accepted.");
 
 		return socketForClient;
 	}
@@ -132,8 +136,8 @@ public class ServerRunner
 	private Socket acceptConnectionForBroadcastingToClient(int i) throws IOException
 	{
 		Socket socketForBroadcastingToClient= gameServerSocket.accept();
-		System.out.print(new Timestamp(System.currentTimeMillis()));
-		System.out.println(" Broadcaster"+i+" accepted connection.");
+		serverWindow.printToDisplay((new Timestamp(System.currentTimeMillis())).toString());
+		serverWindow.printToDisplay(" Client Broadcaster"+i+" accepted connection.");
 		return socketForBroadcastingToClient;
 	}
 }

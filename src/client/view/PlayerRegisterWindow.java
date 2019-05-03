@@ -52,9 +52,9 @@ public class PlayerRegisterWindow extends JFrame implements Labels
 		cbxPlayerType.setBounds(196, 52, 158, 20);
 		contentPane.add(cbxPlayerType);
 		cbxPlayerType.addItem(HUMAN_PLAYER_LABEL);
-		cbxPlayerType.addItem(RANDOM_PLAYER_LABEL);
-		cbxPlayerType.addItem(BLOCKING_PLAYER_LABEL);
-		cbxPlayerType.addItem(SMART_PLAYER_LABEL);
+		cbxPlayerType.addItem(RANDOM_COMP_PLAYER_LABEL);
+		cbxPlayerType.addItem(BLOCKING_COMP_PLAYER_LABEL);
+		cbxPlayerType.addItem(WINNING_COMP_PLAYER_LABEL);
 		
 		cbxPlayerMark = new JComboBox<String>();
 		cbxPlayerMark.setBounds(28, 52, 158, 20);
@@ -72,6 +72,8 @@ public class PlayerRegisterWindow extends JFrame implements Labels
 		lblPlayerType.setBounds(229, 21, 100, 20);
 		contentPane.add(lblPlayerType);
 		
+		this.setTitle("Registration");
+		this.setResizable(false);
 		this.setVisible(true);
 	}
 	

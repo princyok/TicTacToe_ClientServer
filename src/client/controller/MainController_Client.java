@@ -181,7 +181,7 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 			}
 		}
 
-		if (event.getSource()==mainWindow.getBtnRestartGame())
+		if (event.getSource()==mainWindow.getBtnStartGame())
 		{
 			try
 			{
@@ -230,7 +230,7 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 				clearMainDisplay();
 				server_startNewGame();
 				broadcast_clearEverything();
-				mainWindow.resetTitle();
+				mainWindow.resetLblPlayerType();
 			}
 			catch (Exception err)
 			{
@@ -560,7 +560,7 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 	private void displayCurrentPlayer(String playerName, String playerMark)
 	{
 		mainWindow.getUsernameDisplay().setText(playerName);
-		mainWindow.getCurrentPlayerDisplay().setText(playerMark+" player");
+		mainWindow.getCurrentPlayerDisplay().setText(playerMark+" Player");
 	}
 
 	private void displayMove(String r, String c, String playerMark)

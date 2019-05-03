@@ -42,19 +42,19 @@ public class Game implements Labels {
 			xPlayer.setGame(this);
     	}
     	
-    	if(playerType.equals(RANDOM_PLAYER_LABEL))
+    	if(playerType.equals(RANDOM_COMP_PLAYER_LABEL))
     	{
 			xPlayer = new RandomComputerPlayer(name, LETTER_X);
 			xPlayer.setGame(this);
     	}
     	
-    	if(playerType.equals(BLOCKING_PLAYER))
+    	if(playerType.equals(BLOCKING_COMP_PLAYER_LABEL))
     	{
 			xPlayer = new BlockingComputerPlayer(name, LETTER_X);
 			xPlayer.setGame(this);
     	}
     	
-    	if(playerType.equals(SMART_PLAYER))
+    	if(playerType.equals(WINNING_COMP_PLAYER_LABEL))
     	{
 			xPlayer = new WinningComputerPlayer(name, LETTER_X);
 			xPlayer.setGame(this);
@@ -69,17 +69,17 @@ public class Game implements Labels {
 			oPlayer = new HumanPlayer(name, LETTER_O);
 			oPlayer.setGame(this);
     	}
-		if(playerType.equals(RANDOM_PLAYER_LABEL))
+		if(playerType.equals(RANDOM_COMP_PLAYER_LABEL))
     	{
 			oPlayer = new RandomComputerPlayer(name, LETTER_O);
 			oPlayer.setGame(this);
     	}
-		if(playerType.equals(BLOCKING_PLAYER))
+		if(playerType.equals(BLOCKING_COMP_PLAYER_LABEL))
     	{
 			oPlayer = new BlockingComputerPlayer(name, LETTER_O);
 			oPlayer.setGame(this);
     	}
-		if(playerType.equals(SMART_PLAYER))
+		if(playerType.equals(WINNING_COMP_PLAYER_LABEL))
     	{
 			oPlayer = new WinningComputerPlayer(name, LETTER_O);
 			oPlayer.setGame(this);

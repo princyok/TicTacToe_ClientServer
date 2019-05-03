@@ -53,6 +53,7 @@ public class ClientRunner
 					} 
 					catch (Exception e) 
 					{
+						e.getStackTrace();
 						JOptionPane.showMessageDialog(null, "An error occured. The program will now exit.");
 					}
 				}
@@ -71,23 +72,23 @@ public class ClientRunner
 	public ClientRunner() throws IOException, InterruptedException 
 	{
 		String hostName = JOptionPane.showInputDialog("Please enter the hostname or"
-				+ " ip address of the server?", "localhost");        
+				+ " ip address of the server? Or contine with the default:", "localhost");        
 		if (hostName==null)
 		{
 			System.exit(0);
 		}
 
 		int serverPort=7876;
-
-		System.out.print(new Timestamp(System.currentTimeMillis()));
-		System.out.println(" Connection requested.");
+		
 		socketForGame = new Socket(hostName, serverPort);
+//		System.out.print(new Timestamp(System.currentTimeMillis()));
+//		System.out.println(" Connection requested.");
 
-		Thread.sleep(500);
+		Thread.sleep(200);
 
 		socketForBroadcastFromGame = new Socket(hostName, serverPort);
-		System.out.print(new Timestamp(System.currentTimeMillis()));
-		System.out.println(" Client connected to server-side broadcaster");
+//		System.out.print(new Timestamp(System.currentTimeMillis()));
+//		System.out.println(" Client connected to server-side broadcaster");
 	}
 
 	// OPERATIONAL METHODS.
