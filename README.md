@@ -1,6 +1,6 @@
 # How to start playing
 
-1. Download the two .jar files.
+1. Download the two .jar files: "TicTacToeServer.jar" and "TicTacToeClient.jar".
 
 2. Run the file "TicTacToeServer.jar" in order to start the server.
 
