@@ -1,4 +1,4 @@
-# How to start playing:
+# How to start playing
 
 1. Download the two .jar files.
 
