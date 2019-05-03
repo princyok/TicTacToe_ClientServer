@@ -8,7 +8,7 @@
 
 4. Enjoy the game.
 
-** This can be in the same machine as the server or a different machine. If a different machine, you need the network address of the machine on which the server is running. To find this in Windows, run ipconfig in command prompt. If the same machine as the server, then use "localhost" as the address.
+** This can be in the same machine as the server or on a different machine. If a different machine, you need to provide the network address of the machine on which the server is running. To find the network address in Windows, run "ipconfig" in Command Prompt (filename: cmd.exe). If the same machine as the server, then use "localhost" as the network address.
 
 # TicTacToe (ClientServer)
 
