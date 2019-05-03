@@ -178,7 +178,7 @@ public class MainWindow extends JFrame {
 	public void updateLblPlayerType()
 	{
 		lblPlayerMarkType.setForeground(new Color(204, 51, 0));
-		lblPlayerMarkType.setText(markOfMainWindow + " Player");
+		lblPlayerMarkType.setText("Player "+markOfMainWindow);
 		Font f = lblPlayerMarkType.getFont();
 		float fsize = lblPlayerMarkType.getFont().getSize();
 		lblPlayerMarkType.setFont(f.deriveFont(Font.BOLD, fsize));

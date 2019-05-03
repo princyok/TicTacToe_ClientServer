@@ -562,7 +562,7 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 	private void displayCurrentPlayer(String playerName, String playerMark)
 	{
 		mainWindow.getUsernameDisplay().setText(playerName);
-		mainWindow.getCurrentPlayerDisplay().setText(playerMark+" Player");
+		mainWindow.getCurrentPlayerDisplay().setText("Player "+playerMark);
 	}
 
 	private void displayMove(String r, String c, String playerMark)
