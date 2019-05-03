@@ -16,11 +16,11 @@ import javax.swing.JComboBox;
 public class PlayerRegisterWindow extends JFrame implements Labels 
 {
 	
-	protected JPanel contentPane;
-	protected JLabel lblUsername, lblPlayerMark, lblPlayerType;
-	protected JTextField playerInputField;
-	protected JButton btnDoneRegisteringPlayer;
-	protected JComboBox<String> cbxPlayerType, cbxPlayerMark;
+	public JPanel contentPane;
+	public JLabel lblUsername, lblPlayerMark, lblPlayerType;
+	public JTextField playerInputField;
+	public JButton btnDoneRegisteringPlayer;
+	public JComboBox<String> cbxPlayerType, cbxPlayerMark;
 	
 	/**
 	 * Create the frame.
@@ -81,11 +81,6 @@ public class PlayerRegisterWindow extends JFrame implements Labels
 		this.addWindowListener(prController);
 	}
 
-	public JPanel getContentPane() 
-	{
-		return contentPane;
-	}
-
 	public JLabel getLblUsername() 
 	{
 		return lblUsername;
@@ -119,11 +114,6 @@ public class PlayerRegisterWindow extends JFrame implements Labels
 	public JComboBox<String> getCbxPlayerMark() 
 	{
 		return cbxPlayerMark;
-	}
-
-	public void setContentPane(JPanel contentPane) 
-	{
-		this.contentPane = contentPane;
 	}
 
 	public void setLblUsername(JLabel lblUsername) 
