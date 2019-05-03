@@ -4,9 +4,11 @@
 
 2. Run the file "TicTacToeServer.jar" in order to start the server.
 
-3. Run the file "TicTacToeClient.jar" in order to open the game. This can be in the same machine as the server or a different machine. If a different machine, you need the network address of the machine on which the server is running. To find this in Windows, run ipconfig in command prompt. If the same machine as the server, then use "localhost" as the address.
+3. Run the file "TicTacToeClient.jar" in order to open the game.**
 
 4. Enjoy the game.
+
+** This can be in the same machine as the server or a different machine. If a different machine, you need the network address of the machine on which the server is running. To find this in Windows, run ipconfig in command prompt. If the same machine as the server, then use "localhost" as the address.
 
 # TicTacToe (ClientServer)
 
