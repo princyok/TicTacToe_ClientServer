@@ -1,1 +1,0 @@
-This is a client-server architecture. Each tictactoe game involves two GUIs (i.e. along with their client-side controllers), one for each player-mark type, and both connected (via sockets) to one server-side controller instance that controls one server-side game instance.
