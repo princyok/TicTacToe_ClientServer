@@ -2,7 +2,6 @@ package client;
 import java.awt.EventQueue;
 import java.io.IOException;
 import java.net.Socket;
-import java.sql.Timestamp;
 
 import javax.swing.JOptionPane;
 
