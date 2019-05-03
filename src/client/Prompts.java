@@ -10,5 +10,5 @@ public interface Prompts
 	static final String X_ALREADY_TAKEN =  "The Player Mark X has been registered.";
 	static final String O_ALREADY_TAKEN =  "The Player Mark O has been registered.";
 	static final String PROVIDE_USERNAME = "Please enter a username.";
-
+	static final String TWO_CLIENTS_NEEDED = "Two players are needed to run the game. Please run an additional Tictactoe window.";
 }

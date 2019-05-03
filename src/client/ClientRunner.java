@@ -53,7 +53,6 @@ public class ClientRunner
 					} 
 					catch (Exception e) 
 					{
-						e.getStackTrace();
 						JOptionPane.showMessageDialog(null, "An error occured. The program will now exit.");
 					}
 				}

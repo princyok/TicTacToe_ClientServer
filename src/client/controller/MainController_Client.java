@@ -1,6 +1,7 @@
 package client.controller;
 
 import java.awt.Component;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -53,6 +54,8 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 	protected PrintWriter outputToGame;
 	protected JsonObject jsonToGame;
 
+	protected boolean allClientsReady=false;
+
 
 	//INITIALIZER METHODS.
 
@@ -69,7 +72,7 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 	{
 		responseFromGame = new BufferedReader(new InputStreamReader(socketForGame.getInputStream()));
 		outputToGame = new PrintWriter(socketForGame.getOutputStream(), true);
-		
+
 		this.mainWindow = mainWindow;
 
 		broadcastFromGame =  new BufferedReader(new InputStreamReader(socketForBroadcastFromGame.getInputStream()));
@@ -77,7 +80,7 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 		jsonToGame = new JsonObject();
 	}
 
-	// OVERRIDDEN ABSTRACT METHODS.
+	// OVERRIDDEN METHODS.
 
 	/**
 	 * This run method will run in a thread that will allow it to perpetually 
@@ -102,65 +105,18 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 		}
 	}
 
-	// HANDLING OF BROADCASTS FROM GAME CONTROLLER TO ALL CLIENTS.
-
-	/**
-	 * Handles all broadcasts from the game controller.
-	 * @throws IOException
-	 */
-	synchronized public void listenToBroadcastFromGame() throws IOException
-	{
-		String broadcastedFromGame;
-
-		if (broadcastFromGame.ready())
-		{
-			broadcastedFromGame = broadcastFromGame.readLine();
-			
-			JsonObject jsonFromGameBroadcast = new JsonParser().parse(broadcastedFromGame).getAsJsonObject();
-
-			if (jsonFromGameBroadcast.get("broadcast_displayMove") != null)
-			{
-				JsonArray args = (JsonArray) jsonFromGameBroadcast.get("broadcast_displayMove");
-				
-				String row = args.get(0).getAsString();
-				String col = args.get(1).getAsString();
-				String playerMark= args.get(2).getAsString();
-				
-				displayMove(row, col, playerMark);
-			}
-
-			if (jsonFromGameBroadcast.get("broadcast_displayCurrentPlayer") != null)
-			{
-				JsonArray args = (JsonArray) jsonFromGameBroadcast.get("broadcast_displayCurrentPlayer");
-				
-				String playerName = args.get(0).getAsString();
-				String playerMark= args.get(1).getAsString();
-
-				displayCurrentPlayer(playerName, playerMark);
-			}
-
-			if(jsonFromGameBroadcast.get("broadcast_clearEverything") != null)
-			{
-				clearEverything();
-			}
-
-			if(jsonFromGameBroadcast.get("broadcast_displayGameResult") != null)
-			{
-				String gameResult = jsonFromGameBroadcast.get("broadcast_displayGameResult").getAsString()
-						.replaceAll(Pattern.quote("**"),"\n");
-				mainWindow.getMainDisplay().setText(gameResult);
-			}
-		}
-	}
-
-	// EVENT-HANDLING METHODS.
-
 	/**
 	 * Handles all GUI events.
 	 */
 	@Override
 	public void actionPerformed(ActionEvent event) 
 	{
+		if(!allClientsReady)
+		{
+			JOptionPane.showMessageDialog(null, TWO_CLIENTS_NEEDED);
+			return;
+		}
+
 		if (event.getSource()==mainWindow.getBtnZeroZero() ||
 				event.getSource()==mainWindow.getBtnZeroOne() ||
 				event.getSource()==mainWindow.getBtnZeroTwo() ||
@@ -185,9 +141,9 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 		{
 			try
 			{
-				String regStatus = server_checkBothPlayersRegistered();
+				boolean regStatus = server_checkBothPlayersRegistered();
 
-				if(Boolean.parseBoolean(regStatus)==true)
+				if(regStatus==true)
 				{
 					server_setMatchup();
 					nextTurn();
@@ -223,14 +179,8 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 		if (event.getSource()==mainWindow.getBtnRestartGame())
 		{
 			try
-			{
-				clearAllCells();
-				clearCurrentPlayerDisplay();
-				clearUsernameDisplay();
-				clearMainDisplay();
-				server_startNewGame();
-				broadcast_clearEverything();
-				mainWindow.resetLblPlayerType();
+			{			
+				broadcast_startNewGame();
 			}
 			catch (Exception err)
 			{
@@ -239,8 +189,68 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 		}
 	}
 
-
 	//OPERATIONAL METHODS.
+
+	/**
+	 * Handles all broadcasts from the game controller to all clients.
+	 * @throws IOException
+	 */
+	synchronized public void listenToBroadcastFromGame() throws IOException
+	{
+		String broadcastedFromGame;
+
+		if (broadcastFromGame.ready())
+		{
+			broadcastedFromGame = broadcastFromGame.readLine();
+
+			JsonObject jsonFromGameBroadcast = new JsonParser().parse(broadcastedFromGame).getAsJsonObject();
+
+			if (jsonFromGameBroadcast.get("broadcast_displayMove") != null)
+			{
+				JsonArray args = (JsonArray) jsonFromGameBroadcast.get("broadcast_displayMove");
+
+				String row = args.get(0).getAsString();
+				String col = args.get(1).getAsString();
+				String playerMark= args.get(2).getAsString();
+
+				displayMove(row, col, playerMark);
+			}
+
+			if (jsonFromGameBroadcast.get("broadcast_displayCurrentPlayer") != null)
+			{
+				JsonArray args = (JsonArray) jsonFromGameBroadcast.get("broadcast_displayCurrentPlayer");
+
+				String playerName = args.get(0).getAsString();
+				String playerMark= args.get(1).getAsString();
+
+				displayCurrentPlayer(playerName, playerMark);
+			}
+
+			if(jsonFromGameBroadcast.get("broadcast_clearEverything") != null)
+			{
+				clearEverything();
+			}
+
+			if(jsonFromGameBroadcast.get("broadcast_displayGameResult") != null)
+			{
+				String gameResult = jsonFromGameBroadcast.get("broadcast_displayGameResult").getAsString()
+						.replaceAll(Pattern.quote("**"),"\n");
+				mainWindow.getMainDisplay().setText(gameResult);
+			}
+
+			if(jsonFromGameBroadcast.get("broadcast_startNewGame") != null)
+			{
+				clearEverything();
+				mainWindow.resetLblPlayerType();
+			}
+
+			if(jsonFromGameBroadcast.get("broadcast_allClientsReady")!= null)
+			{
+				String status =jsonFromGameBroadcast.get("broadcast_allClientsReady").getAsString();
+				allClientsReady=Boolean.parseBoolean(status);
+			}
+		}
+	}
 
 	/**
 	 *  Registers all clicks on the gameboard (the GUI), and sends instructions/data to the server-side.
@@ -250,9 +260,9 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 	 */
 	public void registerClickOnGameBoard(ActionEvent event) throws IOException
 	{
-		if(Boolean.parseBoolean(server_checkBothPlayersRegistered())==true)
+		if(server_checkBothPlayersRegistered()==true)
 		{	
-			if(Boolean.parseBoolean(server_checkMatchupIsSet())==true)
+			if(server_checkMatchupIsSet()==true)
 			{
 				if(mainWindow.getMarkOfMainWindow().equals(server_getCurrentPlayerMark()))
 				{
@@ -261,15 +271,15 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 					String rowOfCellClicked = Integer.toString(buttonClicked.getRow());
 					String colOfCellClicked = Integer.toString(buttonClicked.getCol());
 
-					String cellStatus=server_isCellPlayed(rowOfCellClicked, colOfCellClicked);
+					boolean cellStatus=server_isCellPlayed(rowOfCellClicked, colOfCellClicked);
 
-					if (Boolean.parseBoolean(cellStatus)==false) 
+					if (cellStatus==false) 
 					{
 						server_play(rowOfCellClicked, colOfCellClicked);
 
 						cellStatus=server_isCellPlayed(rowOfCellClicked, colOfCellClicked);
 
-						if (Boolean.parseBoolean(cellStatus)==true)
+						if (cellStatus==true)
 						{
 							String playerMark=server_getCurrentPlayerMark();
 							buttonClicked.setText(server_getCurrentPlayerMark());
@@ -307,11 +317,11 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 	 */
 	synchronized public void nextTurn() throws IOException
 	{
-		if(Boolean.parseBoolean(server_checkBothPlayersRegistered())==true)
+		if(server_checkBothPlayersRegistered()==true)
 		{
-			if (Boolean.parseBoolean(server_checkIfToContinue())==true)
+			if (server_checkIfToContinue()==true)
 			{
-				if(Boolean.parseBoolean(server_checkIfAnyMoveYet())==true) //if a move has been made (i.e. not the first move of the game).
+				if(server_checkIfAnyMoveYet()==true) //if a move has been made (i.e. not the first move of the game).
 				{
 					server_setOpponentOfCurrentAsCurrent();
 				}
@@ -319,7 +329,7 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 				String playerMark=server_getCurrentPlayerMark();
 				String playerName=server_getCurrentPlayerName();
 				broadcast_displayCurrentPlayer(playerName,playerMark);
-				
+
 				if(!server_getCurrentPlayerType().contains("HumanPlayer")) //if not a human player.
 				{
 					server_playForComputerPlayer();
@@ -338,70 +348,74 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 	}
 
 	// INSTRUCTIONS to SERVER.
-	
+
+
 	private void broadcast_displayGameResult()
 	{
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
-		
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+
 		jsonToGame.add(nameofCurrMethod, JsonNull.INSTANCE);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
 	}
-	
-	private void broadcast_clearEverything()
-	{
-		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
-		
-		jsonToGame.add(nameofCurrMethod, JsonNull.INSTANCE);
-		outputToGame.println(jsonToGame.toString());
-		jsonToGame.remove(nameofCurrMethod);
-	}
-	
+
 	private void broadcast_displayCurrentPlayer(String playerName, String playerMark)
 	{
 		JsonArray args = new JsonArray();
 		args.add(playerName);
 		args.add(playerMark);
-		
+
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
-		
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+
 		jsonToGame.add(nameofCurrMethod, args);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
 	}
-	
+
 	private void broadcast_displayMove(String r, String c, String playerMark)
 	{
 		JsonArray args = new JsonArray();
 		args.add(r);
 		args.add(c);
 		args.add(playerMark);
-		
+
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
-		
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+
 		jsonToGame.add(nameofCurrMethod, args);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
 	}
-	
-	private void server_startNewGame() throws IOException
+
+	private void broadcast_startNewGame() throws IOException
 	{
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
 
 		jsonToGame.add(nameofCurrMethod,JsonNull.INSTANCE);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
 	}
-	
+
+	private int server_getNumberOfClients() throws IOException
+	{
+		class LocalInner{}; 
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+
+		jsonToGame.add(nameofCurrMethod,JsonNull.INSTANCE);
+		outputToGame.println(jsonToGame.toString());
+		jsonToGame.remove(nameofCurrMethod);
+
+		String numClients=responseFromGame.readLine();
+		return Integer.parseInt(numClients);
+	}
+
 	private void server_setOpponentOfCurrentAsCurrent() throws IOException
 	{
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
 
 		jsonToGame.add(nameofCurrMethod,JsonNull.INSTANCE);
 		outputToGame.println(jsonToGame.toString());
@@ -413,67 +427,67 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 		JsonArray args = new JsonArray();
 		args.add(row);
 		args.add(col);
-		
+
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
-		
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+
 		jsonToGame.add(nameofCurrMethod, args);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
 	}
 
-	private String server_isCellPlayed(String row, String col) throws IOException
+	private boolean server_isCellPlayed(String row, String col) throws IOException
 	{
 		JsonArray args = new JsonArray();
 		args.add(row);
 		args.add(col);
-		
+
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
-		
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+
 		jsonToGame.add(nameofCurrMethod, args);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
 
 		String cellStatus=responseFromGame.readLine();		
-		return cellStatus;
+		return Boolean.parseBoolean(cellStatus);
 	}
-	
-	private String server_checkIfToContinue() throws  IOException
+
+	private boolean server_checkIfToContinue() throws  IOException
 	{
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
 
 		jsonToGame.add(nameofCurrMethod,JsonNull.INSTANCE);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
-		
+
 		String contStatus=responseFromGame.readLine();
-		return contStatus;
+		return Boolean.parseBoolean(contStatus);
 	}
-	
-	private String server_checkIfAnyMoveYet() throws  IOException
+
+	private boolean server_checkIfAnyMoveYet() throws  IOException
 	{
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
 
 		jsonToGame.add(nameofCurrMethod,JsonNull.INSTANCE);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
-		
+
 		String anyMoveYet=responseFromGame.readLine();
-		return anyMoveYet;
+		return Boolean.parseBoolean(anyMoveYet);
 	}
 
 	private String server_getCurrentPlayerName() throws IOException
 	{
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
 
 		jsonToGame.add(nameofCurrMethod,JsonNull.INSTANCE);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
-		
+
 		String playerName=responseFromGame.readLine();
 		return playerName;
 	}
@@ -481,82 +495,84 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 	private String server_getCurrentPlayerMark() throws IOException
 	{
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
 
 		jsonToGame.add(nameofCurrMethod,JsonNull.INSTANCE);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
-		
+
 		String playerMark=responseFromGame.readLine();
 		return playerMark;
 	}
-	
+
 	private String server_getCurrentPlayerType() throws IOException
 	{
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
 
 		jsonToGame.add(nameofCurrMethod,JsonNull.INSTANCE);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
-		
+
 		String playerType=responseFromGame.readLine();
+
 		return playerType;
 	}
 
-	private String server_checkBothPlayersRegistered() throws IOException
+	private boolean server_checkBothPlayersRegistered() throws IOException
 	{
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
-		
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+
 		jsonToGame.add(nameofCurrMethod,JsonNull.INSTANCE);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
 
 		String regStatus = responseFromGame.readLine();
-		return regStatus;
+		return Boolean.parseBoolean(regStatus);
 	}
 
-	private String server_checkMatchupIsSet() throws IOException
+	private boolean server_checkMatchupIsSet() throws IOException
 	{
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
-		
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+
 		jsonToGame.add(nameofCurrMethod,JsonNull.INSTANCE);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
 
 		String matchupStatus = responseFromGame.readLine();
-		return matchupStatus;
+
+		return Boolean.parseBoolean(matchupStatus);
 	}
-	
+
 	private void server_setMatchup() throws IOException
 	{
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
-		
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+
 		jsonToGame.add(nameofCurrMethod, JsonNull.INSTANCE);					
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
 	}
-	
+
 	private void server_playForComputerPlayer() throws IOException
 	{
 		class LocalInner{}; 
-        String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
+		String nameofCurrMethod = LocalInner.class.getEnclosingMethod().getName(); 
 
 		jsonToGame.add(nameofCurrMethod,JsonNull.INSTANCE);
 		outputToGame.println(jsonToGame.toString());
 		jsonToGame.remove(nameofCurrMethod);
-		
+
 		String response=responseFromGame.readLine();
 		JsonObject jsonFromGame = new JsonParser().parse(response).getAsJsonObject();
 		JsonArray cellPlayed = (JsonArray) jsonFromGame.get(nameofCurrMethod);
 		broadcast_displayMove(cellPlayed.get(0).getAsString(),cellPlayed.get(1).getAsString(), server_getCurrentPlayerMark());
 	}
-	
+
 	// HELPER METHODS.
-	
+
 	private void displayCurrentPlayer(String playerName, String playerMark)
 	{
 		mainWindow.getUsernameDisplay().setText(playerName);
@@ -614,7 +630,7 @@ public class MainController_Client implements ActionListener, Runnable, Prompts
 			}
 		}
 	}
-	
+
 	private void clearEverything()
 	{
 		this.clearAllCells();

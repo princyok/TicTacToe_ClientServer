@@ -172,6 +172,7 @@ public class MainWindow extends JFrame {
 	{
 		lblPlayerMarkType.setForeground(Color.BLACK);
 		lblPlayerMarkType.setText("None registered");
+		markOfMainWindow=null;
 	}
 	
 	public void updateLblPlayerType()

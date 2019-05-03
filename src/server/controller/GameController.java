@@ -14,8 +14,9 @@ import com.google.gson.JsonParser;
 
 import server.Labels;
 import server.model.Game;
+import server.ServerRunner;
 
-public class ServerController implements Labels, Runnable
+public class GameController implements Labels, Runnable
 {
 	protected Game theGame;
 
@@ -26,6 +27,8 @@ public class ServerController implements Labels, Runnable
 	protected BufferedReader inputFromClient2;
 	protected PrintWriter outputToClient2;
 	protected PrintWriter broadcastToClient2;
+	
+	protected boolean AllClientsReady=false;
 	
 	//INITIALIZER METHODS.
 
@@ -38,7 +41,7 @@ public class ServerController implements Labels, Runnable
 	 * @param socketForBroadcastingToClient2
 	 * @throws IOException
 	 */
-	public ServerController(Game theGame, Socket socketForClient1, Socket socketForBroadcastingToClient1, 
+	public GameController(Game theGame, Socket socketForClient1, Socket socketForBroadcastingToClient1, 
 			Socket socketForClient2, Socket socketForBroadcastingToClient2) throws IOException
 	{
 		this.theGame=theGame;
@@ -50,6 +53,11 @@ public class ServerController implements Labels, Runnable
 		inputFromClient2 = new BufferedReader(new InputStreamReader(socketForClient2.getInputStream()));
 		outputToClient2= new PrintWriter(socketForClient2.getOutputStream(), true);
 		broadcastToClient2 = new PrintWriter(socketForBroadcastingToClient2.getOutputStream(), true);
+		
+		AllClientsReady=true;
+		JsonObject infoToClient =new JsonObject();
+		infoToClient.addProperty("broadcast_allClientsReady", Boolean.toString(AllClientsReady));
+		broadcastToClients(infoToClient.toString());
 	}
 
 	// THREAD METHODS.
@@ -206,26 +214,23 @@ public class ServerController implements Labels, Runnable
 				outputToClient.println(jsonFromClient.toString());
 			}
 
-			if(jsonFromClient.get("server_startNewGame") != null)
-			{
-				this.theGame= new Game();
-			}
-
 			//BROADCASTING.
 
 			if (jsonFromClient.get("broadcast_displayMove") != null)
 			{				
 				broadcastToClients(jsonFromClient.toString());
 			}
+			
+			if(jsonFromClient.get("broadcast_startNewGame") != null)
+			{
+				this.theGame= new Game();
+				
+				broadcastToClients(jsonFromClient.toString());
+			}
 
 			if(jsonFromClient.get("broadcast_displayCurrentPlayer") != null)
 			{
 				broadcastToClients(jsonFromClient.toString());
-			}
-
-			if(jsonFromClient.get("broadcast_clearEverything") != null)
-			{
-				broadcastToClients(jsonFromClient.toString());				
 			}
 
 			if(jsonFromClient.get("broadcast_displayGameResult") != null)
