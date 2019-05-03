@@ -10,7 +10,7 @@
 
 ** This can be in the same machine as the server or on a different machine. If a different machine, you need to provide the network address of the machine on which the server is running. To find the network address in Windows, run "ipconfig" in Command Prompt (filename: cmd.exe). If the same machine as the server, then use "localhost" as the network address.
 
-# TicTacToe (ClientServer)
+# TicTacToe (client-server architecture)
 
 There are two applications here, hence the two .jar files. One runs a server that hosts the game, the server side. The other runs a GUI for a user to play with, the client side. The structure is a very simple client-server architecture.
 
@@ -23,6 +23,8 @@ The server can host up to 5 separate tictactoe games, for a total of 10 players 
 
 ## Connecting to the server
 
-The client must know the network address of the machine running the server. If both client and server are in the same machine, the hostname "localhost" can be used.
+The client must know the network address of the machine running the server. If both the client and server are in the same machine, the default hostname of the machine, "localhost" (which resolves to the loopback address 127.0.0.1), can be used. If the server is on a different machine, you need to provide the network address of that machine before you can run the client.
 
-Note: The firewall or an antivirus program of the machine running the server can interfere with connections to the server. Consider temporarily displaying them or write a rule to 
+To find the network address of a machine, see this short tutorial https://kb.netgear.com/20878/Finding-your-IP-address-without-using-the-command-prompt or Google "Finding ip adress of network".
+
+**Note**: The firewall or an antivirus program of the machine running the server can interfere with connections to the server. Consider temporarily displaying them.
