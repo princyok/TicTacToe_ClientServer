@@ -8,7 +8,7 @@
 
 4. Enjoy the game. Remember that you can select one of three levels of the computer player to play in your place.
 
-** This can be in the same machine as the server or on a different machine. If a different machine, you need to provide the network address of the machine on which the server is running. To find the network address in Windows, run "ipconfig" in Command Prompt (filename: cmd.exe). If the same machine as the server, then use "localhost" as the network address.
+** This can be in the same machine as the server or on a different machine. If in a different machine, you need to provide the network address of the machine on which the server is running (see further explanation below). If in the same machine as the server, then use "localhost" (or 127.0.0.1) as the network address.
 
 # TicTacToe (client-server architecture)
 
