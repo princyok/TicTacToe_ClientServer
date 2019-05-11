@@ -6,34 +6,32 @@ import server.Labels;
 
 public class Game implements Labels {
 	
+	// the object of this class runs and controls the TicTacToe game.
+
+	
 	//ATTRIBUTES.
 
 	protected Board theBoard; // the board.
-	protected Referee theRef; // the referee.
 	protected Player xPlayer; // the x-player.	
 	protected Player oPlayer; // the o-player.
+	protected Player currentPlayer; //whichever player is the current player.
 
-	
 	
 	//INITIALIZER METHODS.
 	
 	/**
-	 * Creates a board.
-	 * 
-     * Creates a referee. There is no match without the referee.
-     * The referee runs and oversees a match.
-     * It sets up the matchup, and oversees the 
-     * turn-by-turn gameplay by making the moves for 
-     * the players as instructed by them.
+	 * Instantiates a Game object and also creates an accompanying Board object.
 	 * @throws IOException 
 	 */
     public Game() throws IOException 
     {
         theBoard  = new Board();
-        theRef = new Referee(this);
 	}
-      
-    //initializes xPlayer and currentPlayer.
+    
+	/**
+	 * initializes xPlayer.
+	 * @throws IOException 
+	 */
     public void createXPlayer(String name, String playerType)
     {
     	if(playerType.equals(HUMAN_PLAYER_LABEL))
@@ -61,8 +59,10 @@ public class Game implements Labels {
     	}
     }
     
-    //initializes oPlayer and currentPlayer.
-    public void createOPlayer(String name, String playerType)
+	/**
+	 * initializes oPlayer.
+	 * @throws IOException 
+	 */    public void createOPlayer(String name, String playerType)
     {	
 		if(playerType.equals(HUMAN_PLAYER_LABEL))
     	{
@@ -86,16 +86,166 @@ public class Game implements Labels {
     	}
     }
     
-    //GETTERS and SETTERS.
+    /**
+     * Sets up the matchup. 
+     */
+	public void setMatchup()
+	{
+		this.xPlayer.setOpponent(this.oPlayer);
+		this.oPlayer.setOpponent(this.xPlayer);
+		setCurrentPlayer(this.xPlayer); //xPlayer is always the first to play (standard TicTacToe rule).
+	}
+	
+	// OPERATIONAL METHODS.
+	
+	/**
+	 * This checks for the current result of the match: that is, whether any of the two players has won,
+	 * or if the match ended in a tie.
+	 * @return the current result of the game.
+	 */
+	public String getGameResult()
+	{
+		if (this.theBoard.xWins()==true)
+		{
+			//xPlayer won the game.
+			String result = "\n "+this.xPlayer.getPlayerName() + " won the game." + "\n The game is now over.";
+			return result;
+		}
+		else if (this.theBoard.oWins()==true)
+		{
+			//oPlayer won the game.
+			String result = "\n "+this.oPlayer.getPlayerName() + " won the game." + "\n The game is now over.";
+			return result;
+		}
+		else if (this.theBoard.isFull()==true)
+		{
+			//game is a tie.
+			String result = "\n The game ended in a tie." + "\n The game is now over.";
+			return result;
+		}
+		else
+		{
+			String result = CONTINUE_THE_GAME;
+			return result;
+		}
+	}
+	
+	/**
+	 * This checks whether another turn can be played. If there is a win or a tie,
+	 * it will return false (i.e. do not continue the game), else it will
+	 * return true (i.e. continue the game).
+	 * @return a boolean of whether the game should continue or end.
+	 * 
+	 */
+	public boolean checkIfToContinue()
+	{
+		if(this.getGameResult()==CONTINUE_THE_GAME)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public boolean checkIfAnyMoveYet()
+	{
+		if(this.theBoard.markCount>0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public boolean checkBothPlayersRegistered()
+	{
+		 //check that players have been created.
+		
+		if(this.xPlayer==null||this.oPlayer==null)
+		{			
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	public boolean checkXPlayerRegistered()
+	{
+		if(this.xPlayer==null)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	public boolean checkOPlayerRegistered()
+	{
+		if(this.oPlayer==null)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	public String getCurrentPlayerMark()
+	{
+		return currentPlayer.getPlayerMark();
+	}
+	
+	public String getCurrentPlayerName()
+	{
+		return currentPlayer.getPlayerName();
+	}
+	
+	
+	public String getCurrentPlayerType()
+	{
+		return currentPlayer.getClass().getName();
+	}
+	
+	public void setOpponentOfCurrentAsCurrent()
+	{
+		currentPlayer=currentPlayer.getOpponent();
+	}
+	
+	public boolean checkMatchupIsSet()
+	{
+		if(this.xPlayer.getOpponent()==null||this.oPlayer.getOpponent()==null)
+		{			
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
     
+    //GETTERS and SETTERS.
+	public void setCurrentPlayer(Player currentPlayer)
+	{
+		this.currentPlayer=currentPlayer;
+	}
+	
+	public Player getCurrentPlayer()
+	{
+		return currentPlayer;
+	}
+	
     public Board getBoard()
     {
     	return theBoard;
-    }
-    
-    public Referee getRef()
-    {
-    	return theRef;
     }
     
     public Player getXPlayer()

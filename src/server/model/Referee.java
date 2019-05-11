@@ -2,10 +2,7 @@ package server.model;
 
 import server.Labels;
 
-public class Referee implements Labels{
-	
-	// the object of this class runs and oversees the TicTacToe game.
-	
+public class Referee implements Labels{	
 	
 	// ATTRIBUTES.
 	

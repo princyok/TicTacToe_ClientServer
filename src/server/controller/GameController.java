@@ -14,7 +14,6 @@ import com.google.gson.JsonParser;
 
 import server.Labels;
 import server.model.Game;
-import server.ServerRunner;
 
 public class GameController implements Labels, Runnable
 {
@@ -119,65 +118,65 @@ public class GameController implements Labels, Runnable
 			
 			if(jsonFromClient.get("server_setMatchup") != null)
 			{
-				theGame.getRef().setMatchup();
+				theGame.setMatchup();
 			}
 
 			if(jsonFromClient.get("server_checkMatchupIsSet") != null)
 			{
-				boolean  result=theGame.getRef().checkMatchupIsSet();
+				boolean  result=theGame.checkMatchupIsSet();
 				outputToClient.println(Boolean.toString(result));
 			}
 
 			if(jsonFromClient.get("server_checkBothPlayersRegistered") != null)
 			{
-				boolean  result = theGame.getRef().checkBothPlayersRegistered();
+				boolean  result = theGame.checkBothPlayersRegistered();
 				outputToClient.println(Boolean.toString(result));
 			}
 
 			if(jsonFromClient.get("server_checkXPlayerRegistered") != null)
 			{
-				boolean  result = theGame.getRef().checkXPlayerRegistered();
+				boolean  result = theGame.checkXPlayerRegistered();
 				outputToClient.println(Boolean.toString(result));
 			}
 
 			if(jsonFromClient.get("server_checkOPlayerRegistered") != null)
 			{
-				boolean  result = theGame.getRef().checkOPlayerRegistered();
+				boolean  result = theGame.checkOPlayerRegistered();
 				outputToClient.println(Boolean.toString(result));
 			}
 
 			if(jsonFromClient.get("server_setOpponentOfCurrentAsCurrent") != null)
 			{
-				theGame.getRef().setOpponentOfCurrentAsCurrent();
+				theGame.setOpponentOfCurrentAsCurrent();
 			}
 
 			if(jsonFromClient.get("server_checkIfAnyMoveYet") != null)
 			{
-				boolean status=theGame.getRef().checkIfAnyMoveYet();
+				boolean status=theGame.checkIfAnyMoveYet();
 				outputToClient.println(Boolean.toString(status));
 			}
 
 			if(jsonFromClient.get("server_checkIfToContinue") != null)
 			{
-				boolean contStatus=theGame.getRef().checkIfToContinue();
+				boolean contStatus=theGame.checkIfToContinue();
 				outputToClient.println(Boolean.toString(contStatus));
 			}
 
 			if(jsonFromClient.get("server_getCurrentPlayerMark") != null)
 			{
-				String playerMark=theGame.getRef().getCurrentPlayerMark();
+				String playerMark=theGame.getCurrentPlayerMark();
 				outputToClient.println(playerMark);
 			}
 
 			if(jsonFromClient.get("server_getCurrentPlayerName") != null)
 			{
-				String playerName=theGame.getRef().getCurrentPlayerName();
+				String playerName=theGame.getCurrentPlayerName();
 				outputToClient.println(playerName);
 			}
 			
 			if(jsonFromClient.get("server_getCurrentPlayerType") != null)
 			{
-				String playerType=theGame.getRef().getCurrentPlayerType();
+				String playerType=theGame.getCurrentPlayerType();
 				outputToClient.println(playerType);
 			}
 
@@ -198,12 +197,12 @@ public class GameController implements Labels, Runnable
 				int row = Integer.parseInt(args.get(0).getAsString());
 				int col = Integer.parseInt(args.get(1).getAsString());
 
-				theGame.getRef().currentPlayer.play(row,col);
+				theGame.getCurrentPlayer().play(row,col);
 			}
 			
 			if(jsonFromClient.get("server_playForComputerPlayer") != null)
 			{
-				ArrayList<Integer> cellPlayed = theGame.getRef().currentPlayer.play();
+				ArrayList<Integer> cellPlayed = theGame.getCurrentPlayer().play();
 				JsonArray cPlayed = new JsonArray();
 				cPlayed.add(cellPlayed.get(0));
 				cPlayed.add(cellPlayed.get(1));
@@ -235,7 +234,7 @@ public class GameController implements Labels, Runnable
 
 			if(jsonFromClient.get("broadcast_displayGameResult") != null)
 			{
-				String gameResult=theGame.getRef().getGameResult();
+				String gameResult=theGame.getGameResult();
 				gameResult=gameResult.replaceAll(Pattern.quote("\n"), "**");
 				
 				jsonFromClient.remove("broadcast_displayGameResult");
