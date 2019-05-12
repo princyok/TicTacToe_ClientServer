@@ -25,6 +25,6 @@ The server can host up to 5 separate tictactoe games, for a total of 10 players 
 
 The client must know the network address of the machine running the server. If both the client and server are in the same machine, the default hostname of the machine, "localhost" (which resolves to the loopback address 127.0.0.1), can be used. If the server is on a different machine, you need to provide the network address of that machine before you can run the client.
 
-To find the network address of a machine, see this short tutorial https://kb.netgear.com/20878/Finding-your-IP-address-without-using-the-command-prompt or Google "Finding ip adress of network".
+To find the network address of a machine, see [this short tutorial](https://kb.netgear.com/20878/Finding-your-IP-address-without-using-the-command-prompt) or Google "Finding ip adress of network".
 
 **Note**: The firewall or an antivirus program of the machine running the server can interfere with connections to the server. Consider temporarily displaying them.
