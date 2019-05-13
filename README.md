@@ -1,10 +1,12 @@
 # How to start playing
 
+You need Java Runtime Environment.
+
 1. Download the two .jar files: "TicTacToeServer.jar" and "TicTacToeClient.jar".
 
 2. Run the file "TicTacToeServer.jar" in order to start the server.
 
-3. Run the file "TicTacToeClient.jar" in order to open the game.**
+3. Run the file "TicTacToeClient.jar" in order to open a game.**
 
 4. Enjoy the game. Remember that you can select one of three levels of the computer player to play in your place.
 
