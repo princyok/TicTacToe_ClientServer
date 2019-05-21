@@ -1,6 +1,6 @@
 # How to start playing
 
-You need Java Runtime Environment (JRE), and probably already have it if you've ever gotten the notorious Java Update prompt in your machine. Get the JRE installed first if you don't already have it. 
+You need Java Runtime Environment (JRE), and probably already have it if you've ever gotten the famous Java Update prompt in your machine. Get the JRE installed first if you don't already have it. 
 
 1. Download the two .jar files: "TicTacToeServer.jar" and "TicTacToeClient.jar".
 
