@@ -29,4 +29,4 @@ The client must know the network address of the machine running the server. If b
 
 To find the network address of a machine, see [this short tutorial](https://kb.netgear.com/20878/Finding-your-IP-address-without-using-the-command-prompt) or Google "Finding ip adress of network".
 
-**Note**: The firewall or an antivirus program of the machine running the server can interfere with connections to the server. Consider temporarily displaying them.
+**Note**: The firewall or an antivirus program of the machine running the server can interfere with connections to the server. Consider temporarily disabling them.
